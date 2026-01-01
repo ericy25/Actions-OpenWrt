@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# 创建 Docker 数据目录
+mkdir -p /overlay/docker
+
+# 挂载到 /var/lib/docker（Docker 默认路径）
+mount --bind /overlay/docker /var/lib/docker
+
+# 启动 dockerd（如果未自动启动）
+/etc/init.d/dockerd start
+
+exit 0
