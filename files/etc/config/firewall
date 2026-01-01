@@ -1,0 +1,35 @@
+config defaults
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+	option syn_flood '1'
+
+config zone
+	option name 'lan'
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'ACCEPT'
+	option network 'lan'
+
+config zone
+	option name 'wan'
+	option input 'REJECT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+	option masq '1'
+	option mtu_fix '1'
+	option network 'wan'
+
+# 允许 LAN → WAN 转发（上网）
+config forwarding
+	option src 'lan'
+	option dest 'wan'
+
+# （可选）开放 Docker 容器端口访问（从 LAN）
+# 如果你需要从 192.168.1.x 访问容器服务（如 Web UI）
+config rule
+	option name 'Allow-Docker-LAN'
+	option src 'lan'
+	option dest_port '1-65535'
+	option proto 'tcpudp'
+	option target 'ACCEPT'
