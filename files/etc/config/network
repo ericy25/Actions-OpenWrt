@@ -1,0 +1,35 @@
+config interface 'loopback'
+	option device 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option packet_steering '1'
+
+# WAN: eth0
+config interface 'wan'
+	option device 'eth0'
+	option proto 'static'
+	option ipaddr '192.168.11.36'
+	option netmask '255.255.255.0'
+	option gateway '192.168.11.1'
+	option dns '192.168.11.1'
+	option delegate '0'
+
+# LAN: 桥接 eth1~eth4
+config interface 'lan'
+	option device 'br-lan'
+	option proto 'static'
+	option ipaddr '192.168.21.1'
+	option netmask '255.255.255.0'
+	option delegate '0'
+
+# 定义 br-lan 桥，包含 eth1~eth4
+config device
+	option name 'br-lan'
+	option type 'bridge'
+	list ports 'eth1'
+	list ports 'eth2'
+	list ports 'eth3'
+	list ports 'eth4'
