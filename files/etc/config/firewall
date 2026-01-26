@@ -1,35 +1,48 @@
 config defaults
-	option input 'ACCEPT'
-	option output 'ACCEPT'
-	option forward 'REJECT'
-	option syn_flood '1'
+    option syn_flood '1'
+    option input 'ACCEPT'
+    option output 'ACCEPT'
+    option forward 'ACCEPT'
+    option drop_invalid '0'
 
 config zone
-	option name 'lan'
-	option input 'ACCEPT'
-	option output 'ACCEPT'
-	option forward 'ACCEPT'
-	option network 'lan'
+    option name 'wan'
+    option input 'ACCEPT'
+    option output 'ACCEPT'
+    option forward 'ACCEPT'
+    option masq '1'
+    list network 'wan'
 
 config zone
-	option name 'wan'
-	option input 'REJECT'
-	option output 'ACCEPT'
-	option forward 'REJECT'
-	option masq '1'
-	option mtu_fix '1'
-	option network 'wan'
+    option name 'iptv'
+    option input 'ACCEPT'
+    option output 'ACCEPT'
+    option forward 'ACCEPT'
+    list network 'iptv'
 
-# 允许 LAN → WAN 转发（上网）
 config forwarding
-	option src 'lan'
-	option dest 'wan'
+    option src 'wan'
+    option dest 'iptv'
 
-# （可选）开放 Docker 容器端口访问（从 LAN）
-# 如果你需要从 192.168.1.x 访问容器服务（如 Web UI）
+config forwarding
+    option src 'iptv'
+    option dest 'wan'
+
 config rule
-	option name 'Allow-Docker-LAN'
-	option src 'lan'
-	option dest_port '1-65535'
-	option proto 'tcpudp'
-	option target 'ACCEPT'
+    option name 'Allow-IGMP'
+    option src '*'
+    option proto 'igmp'
+    option target 'ACCEPT'
+
+config rule
+    option name 'Allow-Multicast'
+    option src '*'
+    option dest_ip '224.0.0.0/4'
+    option target 'ACCEPT'
+
+config rule
+    option name 'Allow-LuCI-SSH'
+    option src '*'
+    option dest_port '22 80 443'
+    option proto 'tcp'
+    option target 'ACCEPT'
