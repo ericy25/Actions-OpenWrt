@@ -1,15 +1,17 @@
 #!/bin/bash
-# 在 feeds.conf.default 末尾添加 passwall 源
-echo "src/gz passwall https://github.com/sbwml/immortalwrt-passwall/releases/download/openwrt-23.05/x86_64" >> "feeds.conf.default"
+# diy-part2.sh
 
-# 更新并安装
+# 克隆官方 PassWall2 仓库到 package 目录
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2.git package/passwall2
+
+# 安装依赖（可选，但建议）
 ./scripts/feeds update -a
-./scripts/feeds install -a -p passwall
+./ scripts/feeds install -a
 
-# 启用 PassWall2 和中文
+# 启用 PassWall2 及中文语言包
 echo "CONFIG_PACKAGE_luci-app-passwall2=y" >> .config
 echo "CONFIG_PACKAGE_luci-i18n-passwall2-zh-cn=y" >> .config
 
-# 确保输出 ext4 镜像（支持扩容）
+# 确保输出 ext4 镜像（支持 16GB 自动扩容）
 echo "CONFIG_TARGET_ROOTFS_EXT4=y" >> .config
 echo "CONFIG_TARGET_ROOTFS_SQUASHFS=n" >> .config
