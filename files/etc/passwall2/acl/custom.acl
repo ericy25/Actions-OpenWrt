@@ -1,0 +1,2 @@
+# bypass eth1 所有流量（IPTV 组播/单播直通）
+ip-interface, eth1, bypass
