@@ -1,20 +1,15 @@
 #!/bin/bash
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-# File name: diy-part2.sh
-# Description: OpenWrt DIY script part 2 (After Update feeds)
-#
-# Copyright (c) 2019-2024 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
+# 在 feeds.conf.default 末尾添加 passwall 源
+echo "src/gz passwall https://github.com/sbwml/immortalwrt-passwall/releases/download/openwrt-23.05/x86_64" >> "feeds.conf.default"
 
-# Modify default IP
-#sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
+# 更新并安装
+./scripts/feeds update -a
+./scripts/feeds install -a -p passwall
 
-# Modify default theme
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+# 启用 PassWall2 和中文
+echo "CONFIG_PACKAGE_luci-app-passwall2=y" >> .config
+echo "CONFIG_PACKAGE_luci-i18n-passwall2-zh-cn=y" >> .config
 
-# Modify hostname
-#sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
+# 确保输出 ext4 镜像（支持扩容）
+echo "CONFIG_TARGET_ROOTFS_EXT4=y" >> .config
+echo "CONFIG_TARGET_ROOTFS_SQUASHFS=n" >> .config
